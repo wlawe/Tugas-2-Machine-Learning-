@@ -1,0 +1,70 @@
+Soal 1
+
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+
+dataset = pd.read_csv('50_Startups.csv')
+
+X = dataset.iloc[:, :-1].values
+y = dataset.iloc[:, -1].values
+
+ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [3])], remainder='passthrough')
+X = np.array(ct.fit_transform(X))
+
+X = X[:, 1:]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+regressor = LinearRegression()
+regressor.fit(X_train, y_train)
+
+new_data = np.array([[1, 0, 0, 160000, 130000, 300000]])  # One-hot encoded with California as 1 and other states as 0
+
+predicted_profit = regressor.predict(new_data)
+
+print(f"Predicted Profit: ${predicted_profit[0]:.2f}")
+
+Soal 2
+
+# Importing the libraries
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+
+dataset = pd.read_csv('50_Startups.csv')
+
+X = dataset.iloc[:, :-1].values
+y = dataset.iloc[:, -1].values
+
+ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [3])], remainder='passthrough')
+X = np.array(ct.fit_transform(X))
+
+X = X[:, 1:]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+regressor = LinearRegression()
+regressor.fit(X_train, y_train)
+
+coefficients = regressor.coef_
+intercept = regressor.intercept_
+
+print("Intercept (b0):", intercept)
+print("Coefficients (b1, b2, ...):", coefficients)
+
+feature_names = ['State_Florida', 'State_New_York', 'R&D Spend', 'Administration', 'Marketing Spend']
+equation = "y = {:.2f}".format(intercept)
+for i, coef in enumerate(coefficients):
+    equation += " + ({:.2f} * {})".format(coef, feature_names[i])
+
+print("Regression Equation:")
+print(equation)
+
